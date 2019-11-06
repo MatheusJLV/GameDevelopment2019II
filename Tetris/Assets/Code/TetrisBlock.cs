@@ -1,7 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * To Do
+ * - Move on a grid
+ * - Blocks collision
+ * - Line clereance
+ * - Losing condition
+ */
 public class TetrisBlock : MonoBehaviour
 {
     public float tickDeltaTime;
@@ -24,6 +30,16 @@ public class TetrisBlock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        { // Rotation
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                trans.rotation *= Quaternion.Euler(0, 0, 90);
+
+                //trans.Rotate(Vector3.forward, 90);
+                //trans.Rotate(new Vector3(0, 0, 90), Space.Self);
+            }
+        }
+
         { // X-axis movement
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -51,9 +67,8 @@ public class TetrisBlock : MonoBehaviour
             //    //actualMovementTick = speedFactor * tickDeltaTime;
             //}
 
-            var shiftPressed = Input.GetKey(KeyCode.LeftShift)
-                               || Input.GetKey(KeyCode.RightShift);
-            var actualMovementTick = shiftPressed ? fastTickDeltaTime : tickDeltaTime;
+            var fastSpeedPressed = Input.GetKey(KeyCode.DownArrow);
+            var actualMovementTick = fastSpeedPressed ? fastTickDeltaTime : tickDeltaTime;
 
             if (accDeltaTime > actualMovementTick)
             {
