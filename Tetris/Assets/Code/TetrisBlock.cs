@@ -43,9 +43,27 @@ public class TetrisBlock : MonoBehaviour
         { // X-axis movement
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
+                var oldPos = trans.position;
                 var newPos = trans.position;
                 newPos.x -= 1;
                 trans.position = newPos;
+                {
+                    var isOut = false;
+                    foreach (var childTransform in trans.GetComponentsInChildren<Transform>())
+                    {
+                        if (childTransform.position.x < 0
+                            || childTransform.position.x > 19)
+                        {
+                            isOut = true;
+                            break;
+                        }
+                    }
+                    if (isOut)
+                    {
+                        trans.position = oldPos;
+                    }
+                }
+                
             }
 
             if (Input.GetKeyDown(KeyCode.RightArrow))
