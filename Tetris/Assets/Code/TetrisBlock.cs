@@ -37,6 +37,10 @@ public class TetrisBlock : MonoBehaviour
                 isOut = true;
                 break;
             }
+            if (childTrans.position.y < 0) {
+                isOut = true;
+                break;
+            }
         }
         return isOut;
     }
@@ -69,7 +73,7 @@ public class TetrisBlock : MonoBehaviour
 
         { // X-axis movement
             if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
+            { // Move left
                 var oldPos = trans.position;
                 var oldRot = trans.rotation;
 
@@ -81,7 +85,7 @@ public class TetrisBlock : MonoBehaviour
             }
 
             if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
+            { // Move Right
                 var oldPos = trans.position;
                 var oldRot = trans.rotation;
 
@@ -110,9 +114,14 @@ public class TetrisBlock : MonoBehaviour
             if (accDeltaTime > actualMovementTick)
             {
                 { // Move down
+                    var oldPos = trans.position;
+                    var oldRot = trans.rotation;
+
                     var newPos = trans.position;
                     newPos.y -= 1;
                     trans.position = newPos;
+
+                    ApplyConstraints(oldPos, oldRot);
                 }
                 accDeltaTime = 0;
             }
