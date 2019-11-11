@@ -5,7 +5,7 @@ using UnityEngine;
  * To Do
  * - Move on a grid
  * - Blocks collision
- * - Line clereance
+ * - Line cleareance
  * - Losing condition
  */
 public class TetrisBlock : MonoBehaviour
@@ -27,14 +27,41 @@ public class TetrisBlock : MonoBehaviour
         trans = this.transform;
     }
 
+    bool CheckConstraints()
+    {
+        var isOut = false;
+        for (int i = 0; i < trans.childCount; i++) {
+            var childTrans = trans.GetChild(i);
+            if (childTrans.position.x < 0
+                || childTrans.position.x > 9) {
+                isOut = true;
+                break;
+            }
+        }
+        return isOut;
+    }
+
+    void ApplyConstraints(Vector3 rollbackPos, Quaternion rollbackRot)
+    {
+        var isOut = CheckConstraints();
+        if (isOut) {
+            trans.position = rollbackPos;
+            trans.rotation = rollbackRot;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         { // Rotation
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
+                var oldPos = trans.position;
+                var oldRot = trans.rotation;
+
                 trans.rotation *= Quaternion.Euler(0, 0, 90);
 
+                ApplyConstraints(oldPos, oldRot);
                 //trans.Rotate(Vector3.forward, 90);
                 //trans.Rotate(new Vector3(0, 0, 90), Space.Self);
             }
@@ -44,33 +71,25 @@ public class TetrisBlock : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 var oldPos = trans.position;
+                var oldRot = trans.rotation;
+
                 var newPos = trans.position;
                 newPos.x -= 1;
                 trans.position = newPos;
-                {
-                    var isOut = false;
-                    foreach (var childTransform in trans.GetComponentsInChildren<Transform>())
-                    {
-                        if (childTransform.position.x < 0
-                            || childTransform.position.x > 19)
-                        {
-                            isOut = true;
-                            break;
-                        }
-                    }
-                    if (isOut)
-                    {
-                        trans.position = oldPos;
-                    }
-                }
-                
+
+                ApplyConstraints(oldPos, oldRot);
             }
 
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
+                var oldPos = trans.position;
+                var oldRot = trans.rotation;
+
                 var newPos = trans.position;
                 newPos.x += 1;
                 trans.position = newPos;
+
+                ApplyConstraints(oldPos, oldRot);
             }
         }
 
